@@ -202,12 +202,12 @@ public class ApplicationMaster {
             r.setVisibility(LocalResourceVisibility.APPLICATION);
             workerResources.put(e.getKey(), r);
         }
-        workerCores = this.getEnvInteger("DMLC_WORKER_CORES", true, workerCores);
-        serverCores = this.getEnvInteger("DMLC_SERVER_CORES", true, serverCores);
-        workerMemoryMB = this.getEnvInteger("DMLC_WORKER_MEMORY_MB", true, workerMemoryMB);
-        serverMemoryMB = this.getEnvInteger("DMLC_SERVER_MEMORY_MB", true, serverMemoryMB);
-        numWorker = this.getEnvInteger("DMLC_NUM_WORKER", true, numWorker);
-        numServer = this.getEnvInteger("DMLC_NUM_SERVER", true, numServer);
+        workerCores = this.getEnvInteger("DMLC_WORKER_CORES", false, workerCores);
+        serverCores = this.getEnvInteger("DMLC_SERVER_CORES", false, serverCores);
+        workerMemoryMB = this.getEnvInteger("DMLC_WORKER_MEMORY_MB", false, workerMemoryMB);
+        serverMemoryMB = this.getEnvInteger("DMLC_SERVER_MEMORY_MB", false, serverMemoryMB);
+        numWorker = this.getEnvInteger("DMLC_NUM_WORKER", false, numWorker);
+        numServer = this.getEnvInteger("DMLC_NUM_SERVER", false, numServer);
         numTasks = numWorker + numServer;
         maxNumAttempt = this.getEnvInteger("DMLC_MAX_ATTEMPT", false,
                                            maxNumAttempt);
