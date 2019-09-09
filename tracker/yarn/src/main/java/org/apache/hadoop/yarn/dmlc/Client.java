@@ -72,6 +72,8 @@ public class Client {
      * @throws IOException
      */
     private Client() throws IOException {
+        conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()); // add this
+        conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());// add this
         conf.addResource(new Path(System.getenv("HADOOP_CONF_DIR") +"/core-site.xml"));
         conf.addResource(new Path(System.getenv("HADOOP_CONF_DIR") +"/hdfs-site.xml"));
         dfs = FileSystem.get(conf);
