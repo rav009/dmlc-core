@@ -38,7 +38,6 @@ def yarn_submit(args, nworker, nserver, pass_env):
         cmd = 'cd %s;./build.%s' % \
               (os.path.join(os.path.dirname(__file__), os.pardir, 'yarn'),
                'bat' if is_windows else 'sh')
-        print(cmd)
         subprocess.check_call(cmd, shell=True, env=os.environ)
         assert os.path.exists(YARN_JAR_PATH), "failed to build dmlc-yarn.jar, try it manually"
 
@@ -104,7 +103,7 @@ def yarn_submit(args, nworker, nserver, pass_env):
     for entry in args.env:
         cmd += ' -env %s ' % entry
     cmd += (' '.join(['./launcher.py'] + new_command))
-    logging.debug(cmd)
+    logging.info(cmd)
     logging.debug("Submit job with %d workers and %d servers", nworker, nserver)
     def run():
         """internal running function."""
