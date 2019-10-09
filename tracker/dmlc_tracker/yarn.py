@@ -17,9 +17,9 @@ def yarn_submit(args, nworker, nserver, pass_env):
     """Submission function for YARN."""
     is_windows = os.name == 'nt'
     hadoop_home = os.getenv('HADOOP_HOME')
-    assert hadoop_home is not None, 'Need to set HADOOP_HOME for YARN submission.'
-    hadoop_binary = os.path.join(hadoop_home, 'bin', 'hadoop')
-    assert os.path.exists(hadoop_binary), "HADOOP_HOME does not contain the hadoop binary"
+    # assert hadoop_home is not None, 'Need to set HADOOP_HOME for YARN submission.'
+    # hadoop_binary = os.path.join(hadoop_home, 'bin', 'hadoop')
+    # assert os.path.exists(hadoop_binary), "HADOOP_HOME does not contain the hadoop binary"
 
     if args.jobname is None:
         if args.num_servers == 0:
@@ -43,17 +43,17 @@ def yarn_submit(args, nworker, nserver, pass_env):
         assert os.path.exists(YARN_JAR_PATH), "failed to build dmlc-yarn.jar, try it manually"
 
     # detech hadoop version
-    (out, _) = subprocess.Popen('%s version' % hadoop_binary,
-                                shell=True, stdout=subprocess.PIPE).communicate()
-    out = out.decode('utf-8').split('\n')[0].split()
-    assert out[0] == 'Hadoop', 'cannot parse hadoop version string'
-    hadoop_version = int(out[1].split('.')[0])
-    (classpath, _) = subprocess.Popen('%s classpath' % hadoop_binary,
-                                      shell=True, stdout=subprocess.PIPE).communicate()
-    classpath = classpath.strip()
+    #(out, _) = subprocess.Popen('%s version' % hadoop_binary,
+    #                            shell=True, stdout=subprocess.PIPE).communicate()
+    #out = out.decode('utf-8').split('\n')[0].split()
+    #assert out[0] == 'Hadoop', 'cannot parse hadoop version string'
+    #hadoop_version = int(out[1].split('.')[0])
+    #(classpath, _) = subprocess.Popen('%s classpath' % hadoop_binary,
+    #                                  shell=True, stdout=subprocess.PIPE).communicate()
+    #classpath = classpath.strip()
 
-    if hadoop_version < 2:
-        raise RuntimeError('Hadoop Version is %s, dmlc_yarn will need Yarn(Hadoop 2.0)' % out[1])
+    # if hadoop_version < 2:
+    #     raise RuntimeError('Hadoop Version is %s, dmlc_yarn will need Yarn(Hadoop 2.0)' % out[1])
 
     fset, new_command = opts.get_cache_file_set(args)
     fset.add(YARN_JAR_PATH)
@@ -69,7 +69,7 @@ def yarn_submit(args, nworker, nserver, pass_env):
         JAVA = 'java'
     else:
         JAVA = os.path.join(JAVA_HOME, 'bin', 'java')
-    cmd = 'hadoop jar dmlc-yarn.jar org.apache.hadoop.yarn.dmlc.Client '
+    cmd = 'hadoop jar %s org.apache.hadoop.yarn.dmlc.Client ' % YARN_JAR_PATH
     env = os.environ.copy()
     for k, v in pass_env.items():
         env[k] = str(v)
@@ -104,7 +104,7 @@ def yarn_submit(args, nworker, nserver, pass_env):
     for entry in args.env:
         cmd += ' -env %s ' % entry
     cmd += (' '.join(['./launcher.py'] + new_command))
-    print(cmd)
+    logging.debug(cmd)
     logging.debug("Submit job with %d workers and %d servers", nworker, nserver)
     def run():
         """internal running function."""
