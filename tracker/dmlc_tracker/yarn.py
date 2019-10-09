@@ -69,8 +69,7 @@ def yarn_submit(args, nworker, nserver, pass_env):
         JAVA = 'java'
     else:
         JAVA = os.path.join(JAVA_HOME, 'bin', 'java')
-    cmd = '%s -cp %s%s%s org.apache.hadoop.yarn.dmlc.Client '\
-          % (JAVA, classpath, ';' if is_windows else ':', YARN_JAR_PATH)
+    cmd = 'hadoop jar dmlc-yarn.jar org.apache.hadoop.yarn.dmlc.Client '
     env = os.environ.copy()
     for k, v in pass_env.items():
         env[k] = str(v)
@@ -105,7 +104,7 @@ def yarn_submit(args, nworker, nserver, pass_env):
     for entry in args.env:
         cmd += ' -env %s ' % entry
     cmd += (' '.join(['./launcher.py'] + new_command))
-
+    print(cmd)
     logging.debug("Submit job with %d workers and %d servers", nworker, nserver)
     def run():
         """internal running function."""
