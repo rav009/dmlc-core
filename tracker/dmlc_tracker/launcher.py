@@ -67,7 +67,9 @@ def main():
         env['LIBHDFS_OPTS'] = '--Xmx128m'
 
     LD_LIBRARY_PATH = env['LD_LIBRARY_PATH'] if 'LD_LIBRARY_PATH' in env else ''
-    env['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH + ':' + ':'.join(library_path)
+    
+    # add the libhdfs path in the end of the row
+    env['LD_LIBRARY_PATH'] = LD_LIBRARY_PATH + ':' + ':'.join(library_path) + ':' + '/opt/libhdfs'
 
     # unzip the archives.
     if 'DMLC_JOB_ARCHIVES' in env:
