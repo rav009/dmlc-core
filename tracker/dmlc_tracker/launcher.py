@@ -21,10 +21,9 @@ def main():
         print('Usage: launcher.py your command')
         sys.exit(0)
 
-    hadoop_home = os.getenv('HADOOP_HOME')
-    hdfs_home = os.getenv('HADOOP_HDFS_HOME')
+    hadoop_home = '/opt/cloudera/parcels/CDH/lib/hadoop'
+    hdfs_home = '/opt/cloudera/parcels/CDH/lib/hadoop-hdfs'
     java_home = os.getenv('JAVA_HOME')
-    hadoop_home = os.getenv('HADOOP_PREFIX') if hadoop_home is None else hadoop_home
     cluster = os.getenv('DMLC_JOB_CLUSTER')
 
     assert cluster is not None, 'need to have DMLC_JOB_CLUSTER'
