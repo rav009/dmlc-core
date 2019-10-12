@@ -49,9 +49,7 @@ def main():
     if hadoop_home:
         library_path.append('%s/lib/native' % hdfs_home)
         library_path.append('%s/lib' % hdfs_home)
-        (classpath, _) = subprocess.Popen('%s/bin/hadoop classpath' % hadoop_home,
-                                          stdout=subprocess.PIPE, shell=True,
-                                          env=os.environ).communicate()
+        (classpath, _) = subprocess.Popen('hadoop classpath',stdout=subprocess.PIPE, shell=True).communicate()
         for f in str(classpath).split(':'):
             class_path += glob.glob(f)
 
