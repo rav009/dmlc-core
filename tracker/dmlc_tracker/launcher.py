@@ -24,7 +24,7 @@ def main():
     hadoop_home = '/opt/cloudera/parcels/CDH/lib/hadoop'
     hdfs_home = '/opt/cloudera/parcels/CDH/lib/hadoop-hdfs'
     java_home = os.getenv('JAVA_HOME')
-    cluster = os.getenv('DMLC_JOB_CLUSTER')
+    cluster = 'yarn'
 
     assert cluster is not None, 'need to have DMLC_JOB_CLUSTER'
 
@@ -32,25 +32,15 @@ def main():
     library_path = ['./']
     class_path = []
 
-    if cluster == 'yarn':
-        assert hadoop_home is not None, 'need to set HADOOP_HOME'
-        assert hdfs_home is not None, 'need to set HADOOP_HDFS_HOME'
-        assert java_home is not None, 'need to set JAVA_HOME'
+    assert hadoop_home is not None, 'need to set HADOOP_HOME'
+    assert hdfs_home is not None, 'need to set HADOOP_HDFS_HOME'
+    assert java_home is not None, 'need to set JAVA_HOME'
 
-    if cluster == 'sge':
-        num_worker = int(env['DMLC_NUM_WORKER'])
-        task_id = int(env['DMLC_TASK_ID'])
-        if task_id < num_worker:
-            env['DMLC_ROLE'] = 'worker'
-        else:
-            env['DMLC_ROLE'] = 'server'
-
-    if hadoop_home:
-        library_path.append('%s/lib/native' % hdfs_home)
-        library_path.append('%s/lib' % hdfs_home)
-        (classpath, _) = subprocess.Popen('hadoop classpath',stdout=subprocess.PIPE, shell=True).communicate()
-        for f in str(classpath).split(':'):
-            class_path += glob.glob(f)
+    library_path.append('%s/lib/native' % hdfs_home)
+    library_path.append('%s/lib' % hdfs_home)
+    class_path = '/etc/hadoop/conf:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop/lib/*:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop/.//*:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop-hdfs/./:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop-hdfs/lib/*:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop-hdfs/.//*:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop-yarn/lib/*:/opt/cloudera/parcels/CDH-5.14.0-1.cdh5.14.0.p0.24/lib/hadoop/libexec/../../hadoop-yarn/.//*:/opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/lib/*:/opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/.//*'
+    for f in str(classpath).split(':'):
+        class_path += glob.glob(f)
 
     if java_home:
         library_path.append('%s/jre/lib/amd64/server' % java_home)
